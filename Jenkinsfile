@@ -35,7 +35,7 @@ spec:
         git 'https://github.com/laparman/bookinfo'
         container(name: 'kaniko') {
             sh '''
-            /kaniko/executor --dockerfile `pwd`/productpage/Dockerfile --context `pwd/productpage/` --destination=wonjoyoo/examples-bookinfo-productpage-v1:${BUILD_NUMBER}
+            /kaniko/executor --dockerfile `pwd`/productpage/Dockerfile --context `pwd`/productpage/ --destination=wonjoyoo/examples-bookinfo-productpage-v1:${BUILD_NUMBER}
             '''
         }
       }
