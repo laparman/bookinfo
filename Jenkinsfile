@@ -30,25 +30,25 @@ spec:
     }
   }
   stages {
-    stage('Build with Kaniko') {
+    stage('BookInfo Build with Kaniko') {
       steps {
-        git 'https://github.com/laparman/docker-hello-world'
+        git 'https://github.com/laparman/bookinfo'
         container(name: 'kaniko') {
             sh '''
-            /kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` --destination=wonjoyoo/tkg:${BUILD_NUMBER}
+            /kaniko/executor --dockerfile `pwd`/productpage/Dockerfile --context `pwd` --destination=wonjoyoo/examples-bookinfo-productpage-v1:${BUILD_NUMBER}
             '''
         }
       }
     }
     stage('Commit change to Argo'){
       steps{
-        git 'https://github.com/laparman/k8s'
+        git 'https://github.com/laparman/k8s_bookinfo'
         container(name: 'argo') {
           checkout([$class: 'GitSCM',
                         branches: [[name: '*/master' ]],
                         extensions: scm.extensions,
                         userRemoteConfigs: [[
-                            url: 'git@github.com:laparman/k8s.git',
+                            url: 'git@github.com:laparman/k8s_bookinfo.git',
                             credentialsId: 'jenkins-ssh-private',
                    ]]
            ])
@@ -61,7 +61,7 @@ spec:
                git checkout master
                ls -al
                cd env/dev 
-               kustomize edit set image wonjoyoo/tkg:${BUILD_NUMBER}
+               kustomize edit set image wonjoyoo/examples-bookinfo-productpage-v1:${BUILD_NUMBER}
                ls -al
                git commit -a -m 'update image tag'
                git push --set-upstream origin master
